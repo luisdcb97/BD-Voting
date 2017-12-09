@@ -1,5 +1,5 @@
-INSERT INTO departamentos(nome)
-VALUES ('DEI');
+INSERT INTO departamentos(nome, faculdades_id)
+VALUES ('DEI', 1);
 
-INSERT INTO departamentos(nome)
-VALUES ('DEEC');
+INSERT INTO departamentos(nome, faculdades_id)
+VALUES ('DEEC', 1);

@@ -11,100 +11,156 @@
     <collation id="5" parent="1" name="RTRIM"/>
     <table id="6" parent="2" name="departamentos"/>
     <table id="7" parent="2" name="faculdades"/>
-    <table id="8" parent="2" name="sqlite_master">
+    <table id="8" parent="2" name="pessoas"/>
+    <table id="9" parent="2" name="sqlite_master">
       <System>1</System>
     </table>
-    <table id="9" parent="2" name="sqlite_sequence">
+    <table id="10" parent="2" name="sqlite_sequence">
       <System>1</System>
     </table>
-    <column id="10" parent="6" name="id">
+    <column id="11" parent="6" name="id">
       <Position>1</Position>
       <DataType>INTEGER|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="11" parent="6" name="nome">
+    <column id="12" parent="6" name="nome">
       <Position>2</Position>
       <DataType>VARCHAR(64)|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="12" parent="6" name="faculdades_id">
+    <column id="13" parent="6" name="faculdades_id">
       <Position>3</Position>
       <DataType>INTEGER|0</DataType>
       <DefaultExpression>NULL</DefaultExpression>
     </column>
-    <foreign-key id="13" parent="6">
-      <ColNames>faculdades_id</ColNames>
-      <RefTableName>faculdades</RefTableName>
-    </foreign-key>
-    <foreign-key id="14" parent="6">
-      <ColNames>faculdades_id</ColNames>
-      <RefTableName>faculdades</RefTableName>
-    </foreign-key>
+    <key id="14" parent="6">
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+    </key>
     <foreign-key id="15" parent="6">
       <ColNames>faculdades_id</ColNames>
       <RefTableName>faculdades</RefTableName>
+      <RefColNames>id</RefColNames>
+      <OnDelete>set-default</OnDelete>
     </foreign-key>
-    <foreign-key id="16" parent="6">
-      <ColNames>faculdades_id</ColNames>
-      <RefTableName>faculdades</RefTableName>
-    </foreign-key>
-    <foreign-key id="17" parent="6">
-      <ColNames>faculdades_id</ColNames>
-      <RefTableName>faculdades</RefTableName>
-    </foreign-key>
-    <foreign-key id="18" parent="6">
-      <ColNames>faculdades_id</ColNames>
-      <RefTableName>faculdades</RefTableName>
-    </foreign-key>
-    <foreign-key id="19" parent="6">
-      <ColNames>faculdades_id</ColNames>
-      <RefTableName>faculdades</RefTableName>
-    </foreign-key>
-    <foreign-key id="20" parent="6">
-      <ColNames>faculdades_id</ColNames>
-      <RefTableName>faculdades</RefTableName>
-    </foreign-key>
-    <column id="21" parent="7" name="id">
+    <check id="16" parent="6" name="UPPER_NOME">
+      <Predicate>nome = UPPER(nome)</Predicate>
+    </check>
+    <column id="17" parent="7" name="id">
       <Position>1</Position>
       <DataType>INTEGER|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="22" parent="7" name="nome">
+    <column id="18" parent="7" name="nome">
       <Position>2</Position>
       <DataType>VARCHAR(64)|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <key id="23" parent="7">
+    <key id="19" parent="7">
       <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
-    <check id="24" parent="7" name="UPPER_NOME">
+    <check id="20" parent="7" name="UPPER_NOME">
       <Predicate>nome = UPPER(nome)</Predicate>
     </check>
-    <column id="25" parent="8" name="type">
+    <column id="21" parent="8" name="id">
+      <Position>1</Position>
+      <DataType>INTEGER|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="22" parent="8" name="nome">
+      <Position>2</Position>
+      <DataType>VARCHAR(128)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="23" parent="8" name="cc">
+      <Position>3</Position>
+      <DataType>VARCHAR(16)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="24" parent="8" name="validade_cc">
+      <Position>4</Position>
+      <DataType>DATE|0</DataType>
+      <NotNull>1</NotNull>
+      <DefaultExpression>&apos;YYYY-MM-DD&apos;</DefaultExpression>
+    </column>
+    <column id="25" parent="8" name="username">
+      <Position>5</Position>
+      <DataType>VARCHAR(64)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="26" parent="8" name="password">
+      <Position>6</Position>
+      <DataType>VARCHAR(64)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="27" parent="8" name="morada">
+      <Position>7</Position>
+      <DataType>VARCHAR(128)|0</DataType>
+    </column>
+    <column id="28" parent="8" name="telefone">
+      <Position>8</Position>
+      <DataType>INTEGER|0</DataType>
+    </column>
+    <column id="29" parent="8" name="funcao">
+      <Position>9</Position>
+      <DataType>VARCHAR(10)|0</DataType>
+      <NotNull>1</NotNull>
+      <DefaultExpression>&apos;STUDENT&apos;</DefaultExpression>
+    </column>
+    <column id="30" parent="8" name="departamento_id">
+      <Position>10</Position>
+      <DataType>INTEGER|0</DataType>
+      <DefaultExpression>NULL</DefaultExpression>
+    </column>
+    <index id="31" parent="8" name="sqlite_autoindex_pessoas_1">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>cc</ColNames>
+      <ColumnCollations>BINARY</ColumnCollations>
+      <Unique>1</Unique>
+    </index>
+    <index id="32" parent="8" name="sqlite_autoindex_pessoas_2">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>username</ColNames>
+      <ColumnCollations>BINARY</ColumnCollations>
+      <Unique>1</Unique>
+    </index>
+    <foreign-key id="33" parent="8">
+      <ColNames>departamento_id</ColNames>
+      <RefTableName>departamentos</RefTableName>
+    </foreign-key>
+    <foreign-key id="34" parent="8">
+      <ColNames>departamento_id</ColNames>
+      <RefTableName>departamentos</RefTableName>
+    </foreign-key>
+    <foreign-key id="35" parent="8">
+      <ColNames>departamento_id</ColNames>
+      <RefTableName>departamentos</RefTableName>
+    </foreign-key>
+    <column id="36" parent="9" name="type">
       <Position>1</Position>
       <DataType>text|0</DataType>
     </column>
-    <column id="26" parent="8" name="name">
+    <column id="37" parent="9" name="name">
       <Position>2</Position>
       <DataType>text|0</DataType>
     </column>
-    <column id="27" parent="8" name="tbl_name">
+    <column id="38" parent="9" name="tbl_name">
       <Position>3</Position>
       <DataType>text|0</DataType>
     </column>
-    <column id="28" parent="8" name="rootpage">
+    <column id="39" parent="9" name="rootpage">
       <Position>4</Position>
       <DataType>integer|0</DataType>
     </column>
-    <column id="29" parent="8" name="sql">
+    <column id="40" parent="9" name="sql">
       <Position>5</Position>
       <DataType>text|0</DataType>
     </column>
-    <column id="30" parent="9" name="name">
+    <column id="41" parent="10" name="name">
       <Position>1</Position>
     </column>
-    <column id="31" parent="9" name="seq">
+    <column id="42" parent="10" name="seq">
       <Position>2</Position>
     </column>
   </database-model>
