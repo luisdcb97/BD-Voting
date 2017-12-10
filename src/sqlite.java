@@ -8,15 +8,19 @@ public class sqlite {
 
         try{
             db = new Database();
-            String strings[][] = db.getDepartamentosByFaculdade(2);
-            for (int i = 0; i < strings[0].length; i++) {
-                for (int j = 0; j < strings.length; j++) {
-                    System.out.print(strings[j][i] + "\t");
+            db.changeFaculdadeOfDepartamento(4,2);
+            /*String[][] sts = db.getFreeDepartamentos();
+            for (int i = 0; i < sts[0].length; i++) {
+                for (int j = 0; j < sts.length; j++) {
+                    System.out.print( sts[j][i] + " \t ");
                 }
                 System.out.println();
-            }
+            }*/
         }catch (SQLException e) {
             e.printStackTrace();
+            System.out.println(e.getErrorCode());
+            System.out.println(e.getSQLState());
+            System.out.println(e.getMessage());
         }
 
     }

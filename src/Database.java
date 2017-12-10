@@ -75,6 +75,7 @@ public class Database {
     public Database() throws SQLException {
         this.databaseConnection = DriverManager.getConnection(this.databaseURL);
         this.prepareStatements();
+        this.toggleForeignKeys(true);
         System.out.println("Database Connected");
     }
 
@@ -88,9 +89,47 @@ public class Database {
     public synchronized void prepareStatements() throws SQLException {
         this.preppedStatements = new PreppedStatements(this.databaseConnection);
 
-        this.preppedStatements.addStatement("ALL FACULDADES", "SELECT * FROM faculdades;");
-        this.preppedStatements.addStatement("ALL DEPARTAMENTOS", "SELECT * FROM departamentos;");
-        this.preppedStatements.addStatement("DEPARTAMENTOS OF FACULDADE", "SELECT * FROM departamentos WHERE faculdades_id = ?;");
+        this.preppedStatements.addStatement(
+                "ALL FACULDADES", "SELECT * FROM faculdades;");
+        this.preppedStatements.addStatement(
+                "CREATE FACULDADE", "INSERT INTO faculdades(nome) VALUES(?);");
+        this.preppedStatements.addStatement(
+                "DELETE FACULDADE", "DELETE FROM faculdades WHERE id = ?;");
+
+        this.preppedStatements.addStatement(
+                "ALL DEPARTAMENTOS", "SELECT * FROM departamentos;");
+        this.preppedStatements.addStatement(
+                "DEPARTAMENTOS OF FACULDADE",
+                "SELECT * FROM departamentos WHERE faculdades_id = ?;");
+        this.preppedStatements.addStatement(
+                "CHANGE FACULDADE OF DEPARTAMENTO",
+                "UPDATE departamentos SET faculdades_id = ? WHERE id = ?");
+        this.preppedStatements.addStatement(
+                "CREATE DEPARTAMENTO", "INSERT INTO departamentos(nome) VALUES(?);");
+        this.preppedStatements.addStatement(
+                "CREATE DEPARTAMENTO OF FACULDADE", "INSERT INTO departamentos(nome, faculdades_id) VALUES(?, ?);");
+        this.preppedStatements.addStatement(
+                "DELETE DEPARTAMENTO", "DELETE FROM departamentos WHERE id = ?;");
+    }
+
+    private synchronized void toggleForeignKeys(boolean lever) throws SQLException {
+        Statement statement =
+                this.databaseConnection.createStatement();
+        String s = "PRAGMA FOREIGN_KEYS = ";
+        if (lever){
+            s += "ON;";
+        }
+        else{
+            s += "OFF;";
+        }
+        statement.executeUpdate(s);
+    }
+
+    public synchronized void createFaculdade(String nome) throws SQLException {
+        PreparedStatement statement =
+                this.preppedStatements.getStatement("CREATE FACULDADE");
+        statement.setString(1, nome);
+        statement.executeUpdate();
     }
 
     public synchronized String[][] getAllFaculdades() throws SQLException {
@@ -114,6 +153,30 @@ public class Database {
             }
         }
         return strings;
+    }
+
+    public synchronized void deleteFaculdade(int id) throws SQLException {
+        PreparedStatement statement =
+                this.preppedStatements.getStatement("DELETE FACULDADE");
+        statement.setInt(1, id);
+        statement.executeUpdate();
+    }
+
+
+
+    public synchronized void createDepartamento(String nome) throws SQLException {
+        PreparedStatement statement =
+                this.preppedStatements.getStatement("CREATE DEPARTAMENTO");
+        statement.setString(1, nome);
+        statement.executeUpdate();
+    }
+
+    public synchronized void createDepartamento(String nome, int idFaculdade) throws SQLException {
+        PreparedStatement statement =
+                this.preppedStatements.getStatement("CREATE DEPARTAMENTO OF FACULDADE");
+        statement.setString(1, nome);
+        statement.setInt(2, idFaculdade);
+        statement.executeUpdate();
     }
 
     public synchronized String[][] getAllDepartamentos() throws SQLException {
@@ -162,4 +225,45 @@ public class Database {
         }
         return strings;
     }
+
+    public synchronized String[][] getFreeDepartamentos() throws SQLException {
+        Statement statement = this.databaseConnection.createStatement();
+        ResultSet set = statement.executeQuery("SELECT * FROM departamentos WHERE faculdades_id IS NULL;");
+        int columnCount = set.getMetaData().getColumnCount();
+        Vector[] departamentos = new Vector[columnCount];
+        for (int i = 0; i < columnCount; i++){
+            departamentos[i] = new Vector<String>();
+            departamentos[i].add(set.getMetaData().getColumnName(i+1));
+        }
+        while(set.next()){
+            departamentos[0].add(set.getInt(1));
+            departamentos[1].add(set.getString(2));
+            departamentos[2].add(set.getInt(3));
+        }
+        String strings[][] = new String[columnCount][departamentos[0].size()];
+        for (int i = 0; i < departamentos.length; i++) {
+            for (int j = 0; j < departamentos[i].size(); j++) {
+                strings[i][j] = String.valueOf(departamentos[i].get(j));
+            }
+        }
+        return strings;
+    }
+
+    public synchronized void deleteDepartamento(int id) throws SQLException {
+        PreparedStatement statement =
+                this.preppedStatements.getStatement("DELETE DEPARTAMENTO");
+        statement.setInt(1, id);
+        statement.executeUpdate();
+    }
+
+    public synchronized void changeFaculdadeOfDepartamento(int dep_id, int fac_id) throws SQLException {
+        PreparedStatement statement =
+                this.preppedStatements.getStatement("CHANGE FACULDADE OF DEPARTAMENTO");
+        statement.setInt(1, fac_id);
+        statement.setInt(2, dep_id);
+        statement.executeUpdate();
+    }
+
+
+
 }
