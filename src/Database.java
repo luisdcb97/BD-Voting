@@ -1,3 +1,4 @@
+import Exceptions.AlreadyInTable;
 import org.omg.CORBA.PUBLIC_MEMBER;
 import org.omg.CORBA.ServerRequest;
 
@@ -170,6 +171,13 @@ public class Database extends UnicastRemoteObject implements DataProvider {
                 "CREATE ELECTION SIMPLE", "INSERT INTO eleicoes(titulo, id_departamento, id_faculdade, tipo) VALUES(?, ?, ?, ?);");
         this.preppedStatements.addStatement(
                 "CREATE ELECTION FULL", "INSERT INTO eleicoes(inicio, fim, titulo, descricao, id_departamento, id_faculdade, tipo) VALUES(?, ?, ?, ?, ?, ?, ?);");
+
+        this.preppedStatements.addStatement(
+                "CREATE MESA", "INSERT INTO mesas(id_departamento, membro1, membro2, membro3) VALUES(?, ?, ?, ?);");
+        this.preppedStatements.addStatement(
+                "ASSOCIATE MESA TO ELECTION",
+                "INSERT INTO mesas_eleicao(id_mesa, id_eleicao) VALUES(?, ?);");
+
 
     }
 
@@ -542,5 +550,43 @@ public class Database extends UnicastRemoteObject implements DataProvider {
     }
 
 
+    public synchronized void createMesa(int dep_id, int id_member1,
+                                        int id_member2, int id_member3) throws SQLException, AlreadyInTable {
+        PreparedStatement statement =
+                this.preppedStatements.getStatement("CREATE MESA");
+        try{
+            statement.setInt(1, dep_id);
+            statement.setInt(2, id_member1);
+            statement.setInt(3, id_member2);
+            statement.setInt(4, id_member3);
+            statement.executeUpdate();
+        } catch (SQLException exc){
+            if (exc.getMessage().contains("Department has reached maximum tables")){
+               throw new AlreadyInTable("Department");
+            }
+            else if(exc.getMessage().contains("different_members")){
+                throw new AlreadyInTable("Member");
+            }
+            else {
+                throw exc;
+            }
+        }
+    }
 
+    public synchronized void associateMesaToEleicao(int id_mesa, int id_eleicao) throws SQLException, AlreadyInTable {
+        PreparedStatement statement =
+                this.preppedStatements.getStatement("ASSOCIATE MESA TO ELECTION");
+        try {
+            statement.setInt(1, id_mesa);
+            statement.setInt(2, id_eleicao);
+            statement.executeUpdate();
+        } catch (SQLException exc) {
+            if (exc.getMessage().contains("Table already in election")){
+                throw new AlreadyInTable("Election");
+            }
+            else {
+                throw exc;
+            }
+        }
+    }
 }
