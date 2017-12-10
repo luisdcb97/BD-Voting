@@ -9,8 +9,8 @@ CREATE TABLE pessoas (
   telefone        INTEGER,
   funcao          VARCHAR(10)         NOT NULL DEFAULT 'STUDENT' CONSTRAINT "valid_job"
   CHECK ( funcao IN ('STUDENT', 'TEACHER', 'JANITOR')),
-  departamento_id INTEGER                      DEFAULT NULL REFERENCES departamentos
-    ON DELETE SET DEFAULT
+  departamento_id INTEGER DEFAULT NULL REFERENCES departamentos ON DELETE SET DEFAULT,
+  faculdade_id INTEGER DEFAULT NULL REFERENCES faculdades ON DELETE SET DEFAULT
 );
 
 CREATE TRIGGER insert_default_date
