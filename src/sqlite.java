@@ -11,9 +11,7 @@ public class sqlite {
 
         try {
             db = new Database();
-//            db.associateMesaToEleicao(1, 2);
-            db.associateMesaToEleicao(2, 3);
-            db.associateMesaToEleicao(4, 5);
+            db.addPersonToLista(1, 54);
             System.out.println("END");
             /*String[][] sts = db.getAllPessoas();
             for (int i = 0; i < sts[0].length; i++) {

@@ -1,3 +1,4 @@
+import Exceptions.AlreadyExists;
 import Exceptions.AlreadyInTable;
 import org.omg.CORBA.PUBLIC_MEMBER;
 import org.omg.CORBA.ServerRequest;
@@ -178,6 +179,17 @@ public class Database extends UnicastRemoteObject implements DataProvider {
                 "ASSOCIATE MESA TO ELECTION",
                 "INSERT INTO mesas_eleicao(id_mesa, id_eleicao) VALUES(?, ?);");
 
+        this.preppedStatements.addStatement(
+                "CREATE VOTE", "INSERT INTO votos(id_mesa, id_eleicao, id_pessoa, data) VALUES(?, ?, ?, ?);");
+
+
+        this.preppedStatements.addStatement(
+                "CREATE LISTA",
+                "INSERT INTO listas(nome, eleicao, tipo) VALUES(?, ?, ?);");
+
+        this.preppedStatements.addStatement(
+                "ASSOCIATE PERSON TO LISTA",
+                "INSERT INTO membros_listas(id_pessoa, id_lista) VALUES(?, ?);");
 
     }
 
@@ -589,4 +601,74 @@ public class Database extends UnicastRemoteObject implements DataProvider {
             }
         }
     }
+
+    public synchronized void personVoted(int id_mesa, int id_eleicao,
+                                         int id_pessoa, Date date) throws AlreadyExists, SQLException {
+        PreparedStatement statement =
+                this.preppedStatements.getStatement("CREATE VOTE");
+
+        try{
+            statement.setInt(1, id_mesa);
+            statement.setInt(2, id_eleicao);
+            statement.setInt(3, id_pessoa);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            if (date == null){
+                statement.setString(4, "YYYY-MM-DD HH:MM:SS");
+            }
+            else {
+                statement.setString(4, dateFormat.format(date));
+            }
+            statement.executeUpdate();
+        } catch (SQLException exc){
+            if (exc.getMessage().contains("This person already voted on this election")){
+                throw new AlreadyExists("Vote on this election");
+            }
+            else {
+                throw exc;
+            }
+        }
+    }
+
+
+    public synchronized void createLista(String nome, int eleicao, ListType listType) throws AlreadyExists, SQLException, IllegalArgumentException {
+        PreparedStatement statement =
+                this.preppedStatements.getStatement("CREATE LISTA");
+        try{
+            statement.setString(1, nome);
+            statement.setInt(2, eleicao);
+            statement.setString(3, listType.getType());
+            statement.executeUpdate();
+        } catch (SQLException exc){
+            if (exc.getMessage().contains("This type of list cannot be in that type of election")){
+                throw new IllegalArgumentException("List type not valid for election");
+            }
+            else if(exc.getMessage().contains("Type of list already in election")){
+                throw new AlreadyExists("List in election");
+            }
+            else {
+                throw exc;
+            }
+        }
+    }
+
+    public synchronized void addPersonToLista(int id_pessoa, int id_lista) throws IllegalArgumentException, SQLException, AlreadyExists {
+        PreparedStatement statement =
+                this.preppedStatements.getStatement("ASSOCIATE PERSON TO LISTA");
+        try {
+            statement.setInt(1, id_pessoa);
+            statement.setInt(2, id_lista);
+            statement.executeUpdate();
+        } catch (SQLException exc) {
+            if (exc.getMessage().contains("Person has to have same function as list")){
+                throw new IllegalArgumentException("Person has to have same function as list");
+            }
+            else if (exc.getMessage().contains("Person already in List")){
+                throw new AlreadyExists("Person in Lista");
+            }
+            else {
+                throw exc;
+            }
+        }
+    }
+
 }
