@@ -165,6 +165,10 @@ public class Database extends UnicastRemoteObject implements DataProvider {
         );
         this.preppedStatements.addStatement(
                 "ALL PESSOAS", "SELECT * FROM pessoas;");
+
+        this.preppedStatements.addStatement(
+                "CREATE ELECTION SIMPLE", "INSERT INTO eleicoes(titulo, id_departamento, id_faculdade, tipo) VALUES(?, ?, ?, ?);");
+
     }
 
     private synchronized void toggleForeignKeys(boolean lever) throws SQLException {
@@ -430,4 +434,53 @@ public class Database extends UnicastRemoteObject implements DataProvider {
         }
         return strings;
     }
+
+
+
+    public synchronized void createEleicaoSimplified(String titulo, Integer dep_id,
+                                                     Integer fac_id, ElectionType tipo) throws SQLException {
+        PreparedStatement statement =
+                this.preppedStatements.getStatement("CREATE ELECTION SIMPLE");
+        statement.setString(1, titulo);
+        if (dep_id == null){
+            if (tipo == ElectionType.NUCLEO_ESTUDANTES || tipo == ElectionType.DEPARTAMENTO){
+                throw new java.lang.IllegalArgumentException("Department id cannot be null for department elections");
+            }
+            else{
+                statement.setNull(2, Types.INTEGER);
+            }
+        }
+        else {
+            if (tipo == ElectionType.FACULDADE || tipo == ElectionType.CONSELHO_GERAL){
+                throw new java.lang.IllegalArgumentException("Department id should be null for faculdade elections");
+            }
+            else {
+                statement.setInt(2, dep_id);
+            }
+        }
+
+        if (fac_id == null){
+            if (tipo == ElectionType.FACULDADE){
+                throw new java.lang.IllegalArgumentException("Faculdade id cannot be null for faculdade elections");
+            }
+            else{
+                statement.setNull(3, Types.INTEGER);
+            }
+        }
+        else {
+            if (tipo != ElectionType.FACULDADE){
+                throw new java.lang.IllegalArgumentException("Faculdade id should be null for non faculdade elections");
+            }
+            else {
+                statement.setInt(3, fac_id);
+            }
+        }
+        statement.setString(4, tipo.getType());
+        statement.executeUpdate();
+    }
+
+
+
+
+
 }
