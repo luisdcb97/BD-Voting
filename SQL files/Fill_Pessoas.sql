@@ -1,10 +1,21 @@
-INSERT INTO pessoas (nome, cc, username, password, morada,
-                     telefone, departamento_id)
-VALUES ('luis', 'z5', 'luisd', 'ola', 'dd', 322, 1);
-
-INSERT INTO pessoas (nome, cc, username, password, validade_cc, morada,
-                     telefone, funcao, departamento_id)
-VALUES ('pedro', 'az5', 'pedroc', 'aaaa', '2017-12-10 00:00:00', 'ww', 123, 'TEACHER', 2);
-
-INSERT INTO pessoas (nome, cc, username, password, validade_cc, funcao, faculdade_id)
-VALUES ('pedasdro', 'aasdz5', 'pedroasdc', 'aaaa', '2017-12-10 00:00:00', 'JANITOR', 3);
+INSERT INTO pessoas (id, nome, cc, validade_cc, username, password, morada, telefone, funcao, departamento_id, faculdade_id) VALUES (1, 'luis', 'z5', '2018-12-01 00:00:00', 'luisd', 'ola', 'dd', 322, 'STUDENT', 1, null);
+INSERT INTO pessoas (id, nome, cc, validade_cc, username, password, morada, telefone, funcao, departamento_id, faculdade_id) VALUES (2, 'pedro', 'az5', '2018-12-01 00:00:00', 'pedroc', 'aaaa', 'ww', 123, 'TEACHER', 2, null);
+INSERT INTO pessoas (id, nome, cc, validade_cc, username, password, morada, telefone, funcao, departamento_id, faculdade_id) VALUES (3, 'pedasdro', 'aasdz5', '2018-12-01 00:00:00', 'pedroasdc', 'aaaa', null, null, 'JANITOR', null, 3);
+INSERT INTO pessoas (id, nome, cc, validade_cc, username, password, morada, telefone, funcao, departamento_id, faculdade_id) VALUES (4, 'artur', 'asddsds', '2018-12-01 00:00:00', 'arturweeb', 'senpai', null, null, 'STUDENT', 1, null);
+INSERT INTO pessoas (id, nome, cc, validade_cc, username, password, morada, telefone, funcao, departamento_id, faculdade_id) VALUES (5, 'hipolito', 'burner', '2018-12-01 00:00:00', 'hepsilon', 'so_kills_me', null, null, 'STUDENT', 1, 1);
+INSERT INTO pessoas (id, nome, cc, validade_cc, username, password, morada, telefone, funcao, departamento_id, faculdade_id) VALUES (6, 'Meleiro', 'bitcoin', '2017-12-15 09:37:34', 'etherium', 'crash', 'monero', 999999999, 'JANITOR', 2, 3);
+INSERT INTO pessoas (id, nome, cc, validade_cc, username, password, morada, telefone, funcao, departamento_id, faculdade_id) VALUES (7, 'Teach_1', 'T1', '2018-12-01 00:00:00', 't_1', 't1', null, null, 'TEACHER', 6, null);
+INSERT INTO pessoas (id, nome, cc, validade_cc, username, password, morada, telefone, funcao, departamento_id, faculdade_id) VALUES (8, 'Teach_2', 'T2', '2018-12-01 00:00:00', 't_2', 't2', null, null, 'TEACHER', 6, null);
+INSERT INTO pessoas (id, nome, cc, validade_cc, username, password, morada, telefone, funcao, departamento_id, faculdade_id) VALUES (9, 'Teach_3', 'T3', '2018-12-01 00:00:00', 't_3', 't3', null, null, 'TEACHER', null, 9);
+INSERT INTO pessoas (id, nome, cc, validade_cc, username, password, morada, telefone, funcao, departamento_id, faculdade_id) VALUES (10, 'Teach_4', 'T4', '2018-12-01 00:00:00', 't_4', 't4', null, null, 'TEACHER', null, 9);
+INSERT INTO pessoas (id, nome, cc, validade_cc, username, password, morada, telefone, funcao, departamento_id, faculdade_id) VALUES (11, 'Teach_5', 'T5', '2018-12-01 00:00:00', 't_5', 't5', null, null, 'TEACHER', null, 9);
+INSERT INTO pessoas (id, nome, cc, validade_cc, username, password, morada, telefone, funcao, departamento_id, faculdade_id) VALUES (12, 'Jan_1', 'J1', '2018-12-01 00:00:00', 'j_1', 'j1', null, null, 'JANITOR', 1, null);
+INSERT INTO pessoas (id, nome, cc, validade_cc, username, password, morada, telefone, funcao, departamento_id, faculdade_id) VALUES (13, 'Jan_2', 'J2', '2018-12-01 00:00:00', 'j_2', 'j2', null, null, 'JANITOR', null, 3);
+INSERT INTO pessoas (id, nome, cc, validade_cc, username, password, morada, telefone, funcao, departamento_id, faculdade_id) VALUES (14, 'Jan_3', 'J3', '2018-12-01 00:00:00', 'j_3', 'j3', null, null, 'JANITOR', null, 7);
+INSERT INTO pessoas (id, nome, cc, validade_cc, username, password, morada, telefone, funcao, departamento_id, faculdade_id) VALUES (15, 'Jan_4', 'J4', '2018-12-01 00:00:00', 'j_4', 'j4', null, null, 'JANITOR', 5, null);
+INSERT INTO pessoas (id, nome, cc, validade_cc, username, password, morada, telefone, funcao, departamento_id, faculdade_id) VALUES (16, 'Jan_5', 'J5', '2018-12-01 00:00:00', 'j_5', 'j5', null, null, 'JANITOR', null, 9);
+INSERT INTO pessoas (id, nome, cc, validade_cc, username, password, morada, telefone, funcao, departamento_id, faculdade_id) VALUES (17, 'Stu_1', 'S1', '2018-12-01 00:00:00', 's_1', 's1', null, null, 'STUDENT', 8, null);
+INSERT INTO pessoas (id, nome, cc, validade_cc, username, password, morada, telefone, funcao, departamento_id, faculdade_id) VALUES (18, 'Stu_2', 'S2', '2018-12-01 00:00:00', 's_2', 's2', null, null, 'STUDENT', 4, null);
+INSERT INTO pessoas (id, nome, cc, validade_cc, username, password, morada, telefone, funcao, departamento_id, faculdade_id) VALUES (19, 'Stu_3', 'S3', '2018-12-01 00:00:00', 's_3', 's3', null, null, 'STUDENT', null, 6);
+INSERT INTO pessoas (id, nome, cc, validade_cc, username, password, morada, telefone, funcao, departamento_id, faculdade_id) VALUES (20, 'Stu_4', 'S4', '2018-12-01 00:00:00', 's_4', 's4', null, null, 'STUDENT', 8, null);
+INSERT INTO pessoas (id, nome, cc, validade_cc, username, password, morada, telefone, funcao, departamento_id, faculdade_id) VALUES (21, 'Stu_5', 'S5', '2018-12-01 00:00:00', 's_5', 's5', 'mira', null, 'STUDENT', null, 6);

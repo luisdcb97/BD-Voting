@@ -1,8 +1,10 @@
-INSERT INTO faculdades(id, nome)
-VALUES (1, 'FCTUC');
-
-INSERT INTO faculdades(nome)
-VALUES ('MEDICINA');
-
-INSERT INTO faculdades(nome)
-VALUES ('PSICOLOGIA');
+INSERT INTO faculdades (id, nome) VALUES (1, 'FCTUC');
+INSERT INTO faculdades (id, nome) VALUES (2, 'MEDICINA');
+INSERT INTO faculdades (id, nome) VALUES (3, 'PSICOLOGIA');
+INSERT INTO faculdades (id, nome) VALUES (4, 'DIREITO');
+INSERT INTO faculdades (id, nome) VALUES (5, 'FAC_1');
+INSERT INTO faculdades (id, nome) VALUES (6, 'FAC_2');
+INSERT INTO faculdades (id, nome) VALUES (7, 'FAC_3');
+INSERT INTO faculdades (id, nome) VALUES (8, 'FAC_4');
+INSERT INTO faculdades (id, nome) VALUES (9, 'FAC_5');
+INSERT INTO faculdades (id, nome) VALUES (10, 'FAC_6');

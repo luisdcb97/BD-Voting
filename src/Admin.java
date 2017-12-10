@@ -58,7 +58,7 @@ public class Admin {
                     admin.menuMesas();
                     break;
                 case 4:
-                    admin.menuPessoa();
+                    admin.menuEleicao();
                     break;
                 case 0:
                     return;
@@ -324,7 +324,7 @@ public class Admin {
         }
     }
 
-    private void menuEleicao() throws SQLException, RemoteException {
+    private void menuEleicao(){
         Scanner sc = new Scanner(System.in);
         while (true) {
             int option = 0;
@@ -350,7 +350,13 @@ public class Admin {
                     this.imprimirEleicoes();
                     System.out.println();
                     int choice = sc.nextInt();
-                    this.db.deleteEleicao(choice);
+                    try {
+                        this.db.deleteEleicao(choice);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case 0:
                     return;
