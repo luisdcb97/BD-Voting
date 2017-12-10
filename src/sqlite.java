@@ -1,3 +1,4 @@
+import java.rmi.RemoteException;
 import java.sql.*;
 
 
@@ -21,6 +22,8 @@ public class sqlite {
             System.out.println(e.getErrorCode());
             System.out.println(e.getSQLState());
             System.out.println(e.getMessage());
+        } catch (RemoteException e) {
+            e.printStackTrace();
         }
 
     }

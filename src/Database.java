@@ -1,12 +1,19 @@
 import org.omg.CORBA.PUBLIC_MEMBER;
+import org.omg.CORBA.ServerRequest;
 
+import java.rmi.AccessException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Vector;
 
-public class Database {
+public class Database extends UnicastRemoteObject implements DataProvider{
     Connection databaseConnection;
+    private Registry registo;
     private String databaseURL = "jdbc:sqlite:tempbd.sqlite3";
     private PreppedStatements preppedStatements;
 
@@ -72,14 +79,49 @@ public class Database {
         }
     }
 
-    public Database() throws SQLException {
+    public static void main(String[] args) {
+        Registry registry = null;
+        try {
+            registry = LocateRegistry.createRegistry(1099);
+            registry.list();
+        } catch (RemoteException e) {
+            System.err.println("Could not retrieve the RMI registry! Make sure it is running");
+            return;
+        }
+        System.out.println("RMI registry obtained!");
+
+        Database bd = null;
+        try {
+            bd = new Database();
+        } catch (SQLException e) {
+            System.err.println("There was a problem connecting to the database:" + e.getMessage());
+            return;
+        } catch (RemoteException e) {
+            System.err.println("There was a remote exception: " + e.getMessage());
+            return;
+        }
+        bd.registo = registry;
+        try {
+            bd.registo.rebind("database", bd);
+            System.out.println("Name bound");
+        } catch (AccessException e) {
+            e.printStackTrace();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public Database() throws SQLException, RemoteException {
+        super();
         this.databaseConnection = DriverManager.getConnection(this.databaseURL);
         this.prepareStatements();
         this.toggleForeignKeys(true);
         System.out.println("Database Connected");
     }
 
-    public Database(String databaseFilename) throws SQLException {
+    public Database(String databaseFilename) throws SQLException, RemoteException {
+        super();
         this.databaseConnection = DriverManager.getConnection(
                 "jdbc:sqlite:" + databaseFilename);
         this.prepareStatements();
