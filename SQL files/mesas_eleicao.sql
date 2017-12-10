@@ -8,6 +8,7 @@ CREATE TRIGGER no_table_copies_in_election_update
   ON mesas_eleicao
   FOR EACH ROW
   WHEN (new.id_mesa, new.id_eleicao) IN (SELECT * FROM mesas_eleicao)
+       AND (old.id_mesa, old.id_eleicao) != (new.id_mesa, new.id_eleicao)
 BEGIN
   SELECT RAISE(FAIL, 'Table already in election');
 END;

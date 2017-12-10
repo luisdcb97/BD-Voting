@@ -11,9 +11,9 @@ CREATE TRIGGER election_list_same_type_update
   BEFORE UPDATE
   ON listas
   FOR EACH ROW
-  WHEN (NEW.tipo = 'STUDENT' AND (SELECT tipo from eleicoes WHERE eleicoes.id = new.eleicao) NOT IN ('DEPARTAMENTO', 'CONSELHO GERAL'))
+  WHEN (NEW.tipo = 'STUDENT' AND (SELECT tipo from eleicoes WHERE eleicoes.id = new.eleicao) NOT IN ('NUCLEO ESTUDANTES', 'CONSELHO GERAL'))
     OR  (NEW.tipo = 'JANITOR' AND (SELECT tipo from eleicoes WHERE eleicoes.id = new.eleicao) NOT IN ('CONSELHO GERAL'))
-    OR  (NEW.tipo = 'TEACHER' AND (SELECT tipo from eleicoes WHERE eleicoes.id = new.eleicao) IN ('DEPARTAMENTO'))
+    OR  (NEW.tipo = 'TEACHER' AND (SELECT tipo from eleicoes WHERE eleicoes.id = new.eleicao) IN ('NUCLEO ESTUDANTES'))
 BEGIN
   SELECT RAISE(FAIL, 'This type of list cannot be in that type of election');
 END;
@@ -22,9 +22,9 @@ CREATE TRIGGER election_list_same_type_insert
   BEFORE INSERT
   ON listas
   FOR EACH ROW
-  WHEN (NEW.tipo = 'STUDENT' AND (SELECT tipo from eleicoes WHERE eleicoes.id = new.eleicao) NOT IN ('DEPARTAMENTO', 'CONSELHO GERAL'))
+  WHEN (NEW.tipo = 'STUDENT' AND (SELECT tipo from eleicoes WHERE eleicoes.id = new.eleicao) NOT IN ('NUCLEO ESTUDANTES', 'CONSELHO GERAL'))
        OR  (NEW.tipo = 'JANITOR' AND (SELECT tipo from eleicoes WHERE eleicoes.id = new.eleicao) NOT IN ('CONSELHO GERAL'))
-       OR  (NEW.tipo = 'TEACHER' AND (SELECT tipo from eleicoes WHERE eleicoes.id = new.eleicao) IN ('DEPARTAMENTO'))
+       OR  (NEW.tipo = 'TEACHER' AND (SELECT tipo from eleicoes WHERE eleicoes.id = new.eleicao) IN ('NUCLEO ESTUDANTES'))
 BEGIN
   SELECT RAISE(FAIL, 'This type of list cannot be in that type of election');
 END;

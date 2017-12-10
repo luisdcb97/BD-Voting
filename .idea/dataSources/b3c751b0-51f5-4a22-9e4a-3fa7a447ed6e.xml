@@ -20,332 +20,411 @@
     <table id="14" parent="2" name="sqlite_master">
       <System>1</System>
     </table>
-    <column id="15" parent="6" name="id">
+    <table id="15" parent="2" name="votos"/>
+    <column id="16" parent="6" name="id">
       <Position>1</Position>
       <DataType>INTEGER|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="16" parent="6" name="nome">
+    <column id="17" parent="6" name="nome">
       <Position>2</Position>
       <DataType>VARCHAR(64)|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="17" parent="6" name="faculdades_id">
+    <column id="18" parent="6" name="faculdades_id">
       <Position>3</Position>
       <DataType>INTEGER|0</DataType>
       <DefaultExpression>NULL</DefaultExpression>
     </column>
-    <key id="18" parent="6">
+    <key id="19" parent="6">
       <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
-    <foreign-key id="19" parent="6">
+    <foreign-key id="20" parent="6">
       <ColNames>faculdades_id</ColNames>
       <RefTableName>faculdades</RefTableName>
       <RefColNames>id</RefColNames>
       <OnDelete>set-default</OnDelete>
     </foreign-key>
-    <check id="20" parent="6" name="UPPER_NOME">
+    <check id="21" parent="6" name="UPPER_NOME">
       <Predicate>nome = UPPER(nome)</Predicate>
     </check>
-    <column id="21" parent="7" name="id">
+    <trigger id="22" parent="7" name="validate_datespan">
+      <Turn>before-row</Turn>
+      <Events>I</Events>
+      <Condition>(new.inicio &gt; new.fim)</Condition>
+    </trigger>
+    <trigger id="23" parent="7" name="insert_default_election_begin_date">
+      <Turn>after-row</Turn>
+      <Events>I</Events>
+      <Condition>(NEW.inicio IS &apos;YYYY-MM-DD HH:MM:SS&apos;)</Condition>
+    </trigger>
+    <trigger id="24" parent="7" name="insert_default_election_end_date">
+      <Turn>after-row</Turn>
+      <Events>I</Events>
+      <Condition>(NEW.fim IS &apos;YYYY-MM-DD HH:MM:SS&apos;)</Condition>
+    </trigger>
+    <column id="25" parent="7" name="id">
       <Position>1</Position>
       <DataType>INTEGER|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="22" parent="7" name="inicio">
+    <column id="26" parent="7" name="inicio">
       <Position>2</Position>
       <DataType>DATETIME|0</DataType>
       <NotNull>1</NotNull>
       <DefaultExpression>&apos;YYYY-MM-DD HH:MM:SS&apos;</DefaultExpression>
     </column>
-    <column id="23" parent="7" name="fim">
+    <column id="27" parent="7" name="fim">
       <Position>3</Position>
       <DataType>DATETIME|0</DataType>
       <NotNull>1</NotNull>
       <DefaultExpression>&apos;YYYY-MM-DD HH:MM:SS&apos;</DefaultExpression>
     </column>
-    <column id="24" parent="7" name="titulo">
+    <column id="28" parent="7" name="titulo">
       <Position>4</Position>
       <DataType>TEXT|0</DataType>
       <NotNull>1</NotNull>
       <DefaultExpression>&apos;&lt;EMPTY&gt;&apos;</DefaultExpression>
     </column>
-    <column id="25" parent="7" name="descricao">
+    <column id="29" parent="7" name="descricao">
       <Position>5</Position>
       <DataType>TEXT|0</DataType>
       <NotNull>1</NotNull>
       <DefaultExpression>&apos;&lt;EMPTY&gt;&apos;</DefaultExpression>
     </column>
-    <column id="26" parent="7" name="id_departamento">
+    <column id="30" parent="7" name="id_departamento">
       <Position>6</Position>
       <DataType>INTEGER|0</DataType>
       <DefaultExpression>NULL</DefaultExpression>
     </column>
-    <column id="27" parent="7" name="id_faculdade">
+    <column id="31" parent="7" name="id_faculdade">
       <Position>7</Position>
       <DataType>INTEGER|0</DataType>
       <DefaultExpression>NULL</DefaultExpression>
     </column>
-    <column id="28" parent="7" name="tipo">
+    <column id="32" parent="7" name="tipo">
       <Position>8</Position>
       <DataType>VARCHAR(64)|0</DataType>
       <NotNull>1</NotNull>
       <DefaultExpression>&apos;CONSELHO GERAL&apos;</DefaultExpression>
     </column>
-    <foreign-key id="29" parent="7">
+    <key id="33" parent="7">
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <foreign-key id="34" parent="7">
       <ColNames>id_departamento</ColNames>
       <RefTableName>departamentos</RefTableName>
       <RefColNames>id</RefColNames>
       <OnDelete>set-default</OnDelete>
     </foreign-key>
-    <foreign-key id="30" parent="7">
+    <foreign-key id="35" parent="7">
       <ColNames>id_faculdade</ColNames>
       <RefTableName>faculdades</RefTableName>
       <RefColNames>id</RefColNames>
       <OnDelete>set-default</OnDelete>
     </foreign-key>
-    <column id="31" parent="8" name="id">
+    <check id="36" parent="7" name="elections_valid_type">
+      <Predicate>tipo IN (&apos;NUCLEO ESTUDANTES&apos;, &apos;DEPARTAMENTO&apos;, &apos;FACULDADE&apos;, &apos;CONSELHO GERAL&apos;)</Predicate>
+    </check>
+    <check id="37" parent="7" name="validate_election_type">
+      <Predicate>(tipo = &apos;NUCLEO ESTUDANTES&apos; AND id_departamento IS NOT NULL AND id_faculdade IS NULL)
+    OR (tipo = &apos;DEPARTAMENTO&apos; AND id_departamento IS NOT NULL AND id_faculdade IS NULL)
+    OR (tipo = &apos;FACULDADE&apos; AND id_departamento IS NULL AND id_faculdade IS NOT NULL)
+    OR (tipo = &apos;CONSELHO GERAL&apos; AND id_departamento IS NULL AND id_faculdade IS NULL)</Predicate>
+    </check>
+    <column id="38" parent="8" name="id">
       <Position>1</Position>
       <DataType>INTEGER|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="32" parent="8" name="nome">
+    <column id="39" parent="8" name="nome">
       <Position>2</Position>
       <DataType>VARCHAR(64)|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <key id="33" parent="8">
+    <key id="40" parent="8">
       <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
-    <check id="34" parent="8" name="UPPER_NOME">
+    <check id="41" parent="8" name="UPPER_NOME">
       <Predicate>nome = UPPER(nome)</Predicate>
     </check>
-    <column id="35" parent="9" name="id">
+    <trigger id="42" parent="9" name="election_list_same_type_insert">
+      <Turn>before-row</Turn>
+      <Events>I</Events>
+      <Condition>(NEW.tipo = &apos;STUDENT&apos; AND (SELECT tipo from eleicoes WHERE eleicoes.id = new.eleicao) NOT IN (&apos;NUCLEO ESTUDANTES&apos;, &apos;CONSELHO GERAL&apos;))
+       OR  (NEW.tipo = &apos;JANITOR&apos; AND (SELECT tipo from eleicoes WHERE eleicoes.id = new.eleicao) NOT IN (&apos;CONSELHO GERAL&apos;))
+       OR  (NEW.tipo = &apos;TEACHER&apos; AND (SELECT tipo from eleicoes WHERE eleicoes.id = new.eleicao) IN (&apos;NUCLEO ESTUDANTES&apos;))</Condition>
+    </trigger>
+    <trigger id="43" parent="9" name="election_list_same_type_update">
+      <Turn>before-row</Turn>
+      <Events>U</Events>
+      <Condition>(NEW.tipo = &apos;STUDENT&apos; AND (SELECT tipo from eleicoes WHERE eleicoes.id = new.eleicao) NOT IN (&apos;NUCLEO ESTUDANTES&apos;, &apos;CONSELHO GERAL&apos;))
+    OR  (NEW.tipo = &apos;JANITOR&apos; AND (SELECT tipo from eleicoes WHERE eleicoes.id = new.eleicao) NOT IN (&apos;CONSELHO GERAL&apos;))
+    OR  (NEW.tipo = &apos;TEACHER&apos; AND (SELECT tipo from eleicoes WHERE eleicoes.id = new.eleicao) IN (&apos;NUCLEO ESTUDANTES&apos;))</Condition>
+    </trigger>
+    <column id="44" parent="9" name="id">
       <Position>1</Position>
       <DataType>INTEGER|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="36" parent="9" name="nome">
+    <column id="45" parent="9" name="nome">
       <Position>2</Position>
       <DataType>VARCHAR(128)|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="37" parent="9" name="votos">
+    <column id="46" parent="9" name="votos">
       <Position>3</Position>
       <DataType>INTEGER|0</DataType>
       <NotNull>1</NotNull>
       <DefaultExpression>0</DefaultExpression>
     </column>
-    <column id="38" parent="9" name="tipo">
+    <column id="47" parent="9" name="tipo">
       <Position>4</Position>
       <DataType>VARCHAR(10)|0</DataType>
       <NotNull>1</NotNull>
       <DefaultExpression>&apos;BLANK&apos;</DefaultExpression>
     </column>
-    <column id="39" parent="9" name="eleicao">
+    <column id="48" parent="9" name="eleicao">
       <Position>5</Position>
       <DataType>INTEGER|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <foreign-key id="40" parent="9">
+    <key id="49" parent="9">
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <foreign-key id="50" parent="9">
       <ColNames>eleicao</ColNames>
       <RefTableName>eleicoes</RefTableName>
       <RefColNames>id</RefColNames>
       <OnDelete>cascade</OnDelete>
     </foreign-key>
-    <column id="41" parent="10" name="id_lista">
+    <check id="51" parent="9" name="lists_valid_type">
+      <Predicate>tipo IN (&apos;STUDENT&apos;, &apos;TEACHER&apos;, &apos;JANITOR&apos;, &apos;BLANK&apos;, &apos;NULL&apos;)</Predicate>
+    </check>
+    <trigger id="52" parent="10" name="check_types_on_insert_membros_listas">
+      <Turn>before-row</Turn>
+      <Events>I</Events>
+      <Condition>(SELECT tipo FROM listas WHERE id = NEW.id_lista)
+    NOT IN
+    ((SELECT funcao FROM pessoas WHERE id = NEW.id_pessoa), &apos;BLANK&apos;, &apos;NULL&apos;)</Condition>
+    </trigger>
+    <trigger id="53" parent="10" name="check_types_on_update_membros_listas">
+      <Turn>before-row</Turn>
+      <Events>U</Events>
+      <Condition>(SELECT tipo FROM listas WHERE id = NEW.id_lista)
+       NOT IN
+       ((SELECT funcao FROM pessoas WHERE id = NEW.id_pessoa), &apos;BLANK&apos;, &apos;NULL&apos;)</Condition>
+    </trigger>
+    <column id="54" parent="10" name="id_lista">
       <Position>1</Position>
       <DataType>INTEGER|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="42" parent="10" name="id_pessoa">
+    <column id="55" parent="10" name="id_pessoa">
       <Position>2</Position>
       <DataType>INTEGER|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <index id="43" parent="10" name="sqlite_autoindex_membros_listas_1">
-      <NameSurrogate>1</NameSurrogate>
-      <ColNames>id_lista
-id_pessoa</ColNames>
-      <ColumnCollations>BINARY
-BINARY</ColumnCollations>
-      <Unique>1</Unique>
-    </index>
-    <foreign-key id="44" parent="10">
+    <foreign-key id="56" parent="10">
       <ColNames>id_lista</ColNames>
       <RefTableName>listas</RefTableName>
       <RefColNames>id</RefColNames>
       <OnDelete>cascade</OnDelete>
     </foreign-key>
-    <foreign-key id="45" parent="10">
+    <foreign-key id="57" parent="10">
       <ColNames>id_pessoa</ColNames>
       <RefTableName>pessoas</RefTableName>
       <RefColNames>id</RefColNames>
       <OnDelete>cascade</OnDelete>
     </foreign-key>
-    <column id="46" parent="11" name="id">
+    <column id="58" parent="11" name="id">
       <Position>1</Position>
       <DataType>INTEGER|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="47" parent="11" name="id_departamento">
+    <column id="59" parent="11" name="id_departamento">
       <Position>2</Position>
       <DataType>INTEGER|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="48" parent="11" name="membro1">
+    <column id="60" parent="11" name="membro1">
       <Position>3</Position>
       <DataType>INTEGER|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="49" parent="11" name="membro2">
+    <column id="61" parent="11" name="membro2">
       <Position>4</Position>
       <DataType>INTEGER|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="50" parent="11" name="membro3">
+    <column id="62" parent="11" name="membro3">
       <Position>5</Position>
       <DataType>INTEGER|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <foreign-key id="51" parent="11">
+    <foreign-key id="63" parent="11">
       <ColNames>id_departamento</ColNames>
       <RefTableName>departamentos</RefTableName>
     </foreign-key>
-    <foreign-key id="52" parent="11">
+    <foreign-key id="64" parent="11">
       <ColNames>id_departamento</ColNames>
       <RefTableName>departamentos</RefTableName>
     </foreign-key>
-    <foreign-key id="53" parent="11">
+    <foreign-key id="65" parent="11">
       <ColNames>id_departamento</ColNames>
       <RefTableName>departamentos</RefTableName>
     </foreign-key>
-    <foreign-key id="54" parent="11">
+    <foreign-key id="66" parent="11">
       <ColNames>id_departamento</ColNames>
       <RefTableName>departamentos</RefTableName>
     </foreign-key>
-    <foreign-key id="55" parent="11">
+    <foreign-key id="67" parent="11">
       <ColNames>id_departamento</ColNames>
       <RefTableName>departamentos</RefTableName>
     </foreign-key>
-    <foreign-key id="56" parent="11">
+    <foreign-key id="68" parent="11">
       <ColNames>id_departamento</ColNames>
       <RefTableName>departamentos</RefTableName>
     </foreign-key>
-    <foreign-key id="57" parent="11">
+    <foreign-key id="69" parent="11">
       <ColNames>id_departamento</ColNames>
       <RefTableName>departamentos</RefTableName>
     </foreign-key>
-    <foreign-key id="58" parent="11">
+    <foreign-key id="70" parent="11">
       <ColNames>id_departamento</ColNames>
       <RefTableName>departamentos</RefTableName>
     </foreign-key>
-    <foreign-key id="59" parent="11">
+    <foreign-key id="71" parent="11">
       <ColNames>id_departamento</ColNames>
       <RefTableName>departamentos</RefTableName>
     </foreign-key>
-    <column id="60" parent="12" name="id_mesa">
+    <foreign-key id="72" parent="11">
+      <ColNames>id_departamento</ColNames>
+      <RefTableName>departamentos</RefTableName>
+    </foreign-key>
+    <foreign-key id="73" parent="11">
+      <ColNames>id_departamento</ColNames>
+      <RefTableName>departamentos</RefTableName>
+    </foreign-key>
+    <foreign-key id="74" parent="11">
+      <ColNames>id_departamento</ColNames>
+      <RefTableName>departamentos</RefTableName>
+    </foreign-key>
+    <foreign-key id="75" parent="11">
+      <ColNames>id_departamento</ColNames>
+      <RefTableName>departamentos</RefTableName>
+    </foreign-key>
+    <column id="76" parent="12" name="id_mesa">
       <Position>1</Position>
       <DataType>INTEGER|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="61" parent="12" name="id_eleicao">
+    <column id="77" parent="12" name="id_eleicao">
       <Position>2</Position>
       <DataType>INTEGER|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="62" parent="13" name="id">
+    <column id="78" parent="13" name="id">
       <Position>1</Position>
       <DataType>INTEGER|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="63" parent="13" name="nome">
+    <column id="79" parent="13" name="nome">
       <Position>2</Position>
       <DataType>VARCHAR(128)|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="64" parent="13" name="cc">
+    <column id="80" parent="13" name="cc">
       <Position>3</Position>
       <DataType>VARCHAR(16)|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="65" parent="13" name="validade_cc">
+    <column id="81" parent="13" name="validade_cc">
       <Position>4</Position>
-      <DataType>DATE|0</DataType>
+      <DataType>DATETIME|0</DataType>
       <NotNull>1</NotNull>
       <DefaultExpression>&apos;YYYY-MM-DD HH:MM:SS&apos;</DefaultExpression>
     </column>
-    <column id="66" parent="13" name="username">
+    <column id="82" parent="13" name="username">
       <Position>5</Position>
       <DataType>VARCHAR(64)|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="67" parent="13" name="password">
+    <column id="83" parent="13" name="password">
       <Position>6</Position>
       <DataType>VARCHAR(64)|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="68" parent="13" name="morada">
+    <column id="84" parent="13" name="morada">
       <Position>7</Position>
       <DataType>VARCHAR(128)|0</DataType>
     </column>
-    <column id="69" parent="13" name="telefone">
+    <column id="85" parent="13" name="telefone">
       <Position>8</Position>
       <DataType>INTEGER|0</DataType>
     </column>
-    <column id="70" parent="13" name="funcao">
+    <column id="86" parent="13" name="funcao">
       <Position>9</Position>
       <DataType>VARCHAR(10)|0</DataType>
       <NotNull>1</NotNull>
       <DefaultExpression>&apos;STUDENT&apos;</DefaultExpression>
     </column>
-    <column id="71" parent="13" name="departamento_id">
+    <column id="87" parent="13" name="departamento_id">
       <Position>10</Position>
       <DataType>INTEGER|0</DataType>
       <DefaultExpression>NULL</DefaultExpression>
     </column>
-    <column id="72" parent="13" name="faculdade_id">
+    <column id="88" parent="13" name="faculdade_id">
       <Position>11</Position>
       <DataType>INTEGER|0</DataType>
       <DefaultExpression>NULL</DefaultExpression>
     </column>
-    <index id="73" parent="13" name="sqlite_autoindex_pessoas_2">
-      <NameSurrogate>1</NameSurrogate>
-      <ColNames>username</ColNames>
-      <ColumnCollations>BINARY</ColumnCollations>
-      <Unique>1</Unique>
-    </index>
-    <index id="74" parent="13" name="sqlite_autoindex_pessoas_1">
-      <NameSurrogate>1</NameSurrogate>
-      <ColNames>cc</ColNames>
-      <ColumnCollations>BINARY</ColumnCollations>
-      <Unique>1</Unique>
-    </index>
-    <foreign-key id="75" parent="13">
-      <ColNames>departamento_id</ColNames>
-      <RefTableName>departamentos</RefTableName>
-    </foreign-key>
-    <column id="76" parent="14" name="type">
+    <column id="89" parent="14" name="type">
       <Position>1</Position>
       <DataType>text|0</DataType>
     </column>
-    <column id="77" parent="14" name="name">
+    <column id="90" parent="14" name="name">
       <Position>2</Position>
       <DataType>text|0</DataType>
     </column>
-    <column id="78" parent="14" name="tbl_name">
+    <column id="91" parent="14" name="tbl_name">
       <Position>3</Position>
       <DataType>text|0</DataType>
     </column>
-    <column id="79" parent="14" name="rootpage">
+    <column id="92" parent="14" name="rootpage">
       <Position>4</Position>
       <DataType>integer|0</DataType>
     </column>
-    <column id="80" parent="14" name="sql">
+    <column id="93" parent="14" name="sql">
       <Position>5</Position>
       <DataType>text|0</DataType>
+    </column>
+    <column id="94" parent="15" name="id">
+      <Position>1</Position>
+      <DataType>INTEGER|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="95" parent="15" name="data">
+      <Position>2</Position>
+      <DataType>DATETIME|0</DataType>
+      <NotNull>1</NotNull>
+      <DefaultExpression>&apos;YYYY-MM-DD HH:MM:SS&apos;</DefaultExpression>
+    </column>
+    <column id="96" parent="15" name="id_mesa">
+      <Position>3</Position>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="97" parent="15" name="id_eleicao">
+      <Position>4</Position>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="98" parent="15" name="id_pessoa">
+      <Position>5</Position>
+      <NotNull>1</NotNull>
     </column>
   </database-model>
 </dataSource>

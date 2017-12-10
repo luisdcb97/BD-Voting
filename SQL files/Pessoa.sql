@@ -2,7 +2,7 @@ CREATE TABLE pessoas (
   id              INTEGER PRIMARY KEY NOT NULL,
   nome            VARCHAR(128)        NOT NULL,
   cc              VARCHAR(16)         NOT NULL UNIQUE,
-  validade_cc     DATE                NOT NULL DEFAULT 'YYYY-MM-DD HH:MM:SS',
+  validade_cc     DATETIME                NOT NULL DEFAULT 'YYYY-MM-DD HH:MM:SS',
   username        VARCHAR(64)         NOT NULL UNIQUE,
   password        VARCHAR(64)         NOT NULL,
   morada          VARCHAR(128),
