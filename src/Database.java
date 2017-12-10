@@ -173,6 +173,8 @@ public class Database extends UnicastRemoteObject implements DataProvider {
         );
         this.preppedStatements.addStatement(
                 "ALL PESSOAS", "SELECT * FROM pessoas;");
+        this.preppedStatements.addStatement(
+                "DELETE PESSOA", "DELETE FROM pessoas WHERE id = ?;");
 
         this.preppedStatements.addStatement(
                 "CREATE ELECTION SIMPLE", "INSERT INTO eleicoes(titulo, id_departamento, id_faculdade, tipo) VALUES(?, ?, ?, ?);");
@@ -432,6 +434,66 @@ public class Database extends UnicastRemoteObject implements DataProvider {
 
     }
 
+    public synchronized void deletePessoa(int id) throws SQLException {
+        PreparedStatement statement =
+                this.preppedStatements.getStatement("DELETE PESSOA");
+        statement.setInt(1, id);
+        statement.executeUpdate();
+    }
+
+    public synchronized void changeAddress(int id, String morada) throws SQLException {
+        PreparedStatement statement =
+                this.databaseConnection.prepareStatement(
+                "UPDATE pessoas SET morada = ? WHERE id = ?;");
+        statement.setString(1, morada);
+        statement.setInt(2, id);
+        statement.executeUpdate();
+    }
+
+    public synchronized void changePhone(int id, Integer phone) throws SQLException {
+        PreparedStatement statement =
+                this.databaseConnection.prepareStatement(
+                        "UPDATE pessoas SET telefone = ? WHERE id = ?;");
+        statement.setInt(1, phone);
+        statement.setInt(2, id);
+        statement.executeUpdate();
+    }
+
+    public synchronized void changeCredentials(int id, String username, String password) throws SQLException {
+        PreparedStatement statement =
+                this.databaseConnection.prepareStatement(
+                        "UPDATE pessoas SET username = ?, password = ? WHERE id = ?;");
+        statement.setString(1, username);
+        statement.setString(2, password);
+        statement.setInt(3, id);
+        statement.executeUpdate();
+    }
+
+    public synchronized void changeName(int id, String name) throws SQLException {
+        PreparedStatement statement =
+                this.databaseConnection.prepareStatement(
+                        "UPDATE pessoas SET nome = ? WHERE id = ?;");
+        statement.setString(1, name);
+        statement.setInt(2, id);
+        statement.executeUpdate();
+    }
+
+    public synchronized void changeCC(int id, String cc, Date validade) throws SQLException {
+        PreparedStatement statement =
+                this.databaseConnection.prepareStatement(
+                        "UPDATE pessoas SET cc = ?, validade_cc = ? WHERE id = ?;");
+        if (validade != null) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            statement.setString(2, dateFormat.format(validade));
+        }
+        else {
+            statement.setString(2, "YYYY-MM-DD HH:MM:SS");
+        }
+        statement.setString(1, cc);
+        statement.setInt(3, id);
+        statement.executeUpdate();
+    }
+
     public synchronized String[][] getAllPessoas() throws SQLException {
         ResultSet set;
         set = this.preppedStatements.getStatement("ALL PESSOAS").executeQuery();
@@ -568,6 +630,43 @@ public class Database extends UnicastRemoteObject implements DataProvider {
     }
 
 
+    public synchronized String[][] getAllElections() throws SQLException {
+        PreparedStatement statement =
+                databaseConnection.prepareStatement("SELECT * FROM eleicoes;");
+        ResultSet set = statement.executeQuery();
+        int columnCount = set.getMetaData().getColumnCount();
+        Vector[] pessoas = new Vector[columnCount];
+        int[] columnTypes = new int[columnCount];
+        for (int i = 0; i < columnCount; i++) {
+            pessoas[i] = new Vector<String>();
+            pessoas[i].add(set.getMetaData().getColumnName(i + 1));
+        }
+        while (set.next()) {
+            pessoas[0].add(set.getInt(1));
+            pessoas[1].add(set.getString(2));
+            pessoas[2].add(set.getString(3));
+            pessoas[3].add(set.getString(4));
+            pessoas[4].add(set.getString(5));
+            pessoas[7].add(set.getInt(6));
+            pessoas[7].add(set.getInt(7));
+            pessoas[5].add(set.getString(8));
+        }
+        String strings[][] = new String[columnCount][pessoas[0].size()];
+        for (int i = 0; i < pessoas.length; i++) {
+            for (int j = 0; j < pessoas[i].size(); j++) {
+                strings[i][j] = String.valueOf(pessoas[i].get(j));
+            }
+        }
+        return strings;
+    }
+
+    public synchronized void deleteEleicao(int id) throws SQLException {
+        PreparedStatement statement =
+                databaseConnection.prepareStatement("DELETE FROM eleicoes WHERE id = ?;");
+        statement.setInt(1, id);
+        statement.executeUpdate();
+    }
+
     public synchronized void createMesa(int dep_id, int id_member1,
                                         int id_member2, int id_member3) throws SQLException, AlreadyInTable {
         PreparedStatement statement =
@@ -589,6 +688,40 @@ public class Database extends UnicastRemoteObject implements DataProvider {
                 throw exc;
             }
         }
+    }
+
+    public synchronized String[][] getAllMesas() throws SQLException {
+        PreparedStatement statement =
+                databaseConnection.prepareStatement("SELECT * FROM mesas;");
+        ResultSet set;
+        set = statement.executeQuery();
+        int columnCount = set.getMetaData().getColumnCount();
+        Vector[] mesas = new Vector[columnCount];
+        for (int i = 0; i < columnCount; i++) {
+            mesas[i] = new Vector<String>();
+            mesas[i].add(set.getMetaData().getColumnName(i + 1));
+        }
+        while (set.next()) {
+            mesas[0].add(set.getInt(1));
+            mesas[1].add(set.getInt(2));
+            mesas[2].add(set.getInt(3));
+            mesas[2].add(set.getInt(4));
+            mesas[2].add(set.getInt(5));
+        }
+        String strings[][] = new String[columnCount][mesas[0].size()];
+        for (int i = 0; i < mesas.length; i++) {
+            for (int j = 0; j < mesas[i].size(); j++) {
+                strings[i][j] = String.valueOf(mesas[i].get(j));
+            }
+        }
+        return strings;
+    }
+
+    public synchronized void deleteMesa(int id) throws SQLException {
+        PreparedStatement statement =
+                databaseConnection.prepareStatement("DELETE FROM mesas WHERE id = ?;");
+        statement.setInt(1, id);
+        statement.executeUpdate();
     }
 
     public synchronized void associateMesaToEleicao(int id_mesa, int id_eleicao) throws SQLException, AlreadyInTable {
