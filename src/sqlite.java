@@ -11,10 +11,18 @@ public class sqlite {
 
         try {
             db = new Database();
-            db.createEleicaoSimplified("vamos ganhar", 2, null, Database.ElectionType.DEPARTAMENTO);
-            db.createEleicaoSimplified("vamos ganhar?", 4, null, Database.ElectionType.NUCLEO_ESTUDANTES);
-            db.createEleicaoSimplified("vamos ganhar!!!!!", null, 3, Database.ElectionType.FACULDADE);
-            db.createEleicaoSimplified("bora para a AAC", null, null, Database.ElectionType.CONSELHO_GERAL);
+            Date date = new Date();
+            Date date2 = new Date();
+            date2.setTime(date2.getTime() + 1000 *60 *60 *24);
+            System.out.println(date.getTime());
+            System.out.println(date2.getTime());
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            System.out.println(dateFormat.format(date));
+            System.out.println(dateFormat.format(date2));
+            db.createEleicaoFull(date, date2, "elec_1",
+                    "generic description here", 5, null,
+                    Database.ElectionType.DEPARTAMENTO);
             /*String[][] sts = db.getAllPessoas();
             for (int i = 0; i < sts[0].length; i++) {
                 for (int j = 0; j < sts.length; j++) {

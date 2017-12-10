@@ -168,6 +168,8 @@ public class Database extends UnicastRemoteObject implements DataProvider {
 
         this.preppedStatements.addStatement(
                 "CREATE ELECTION SIMPLE", "INSERT INTO eleicoes(titulo, id_departamento, id_faculdade, tipo) VALUES(?, ?, ?, ?);");
+        this.preppedStatements.addStatement(
+                "CREATE ELECTION FULL", "INSERT INTO eleicoes(inicio, fim, titulo, descricao, id_departamento, id_faculdade, tipo) VALUES(?, ?, ?, ?, ?, ?, ?);");
 
     }
 
@@ -403,6 +405,7 @@ public class Database extends UnicastRemoteObject implements DataProvider {
         statement.executeUpdate();
 
     }
+
     public synchronized String[][] getAllPessoas() throws SQLException {
         ResultSet set;
         set = this.preppedStatements.getStatement("ALL PESSOAS").executeQuery();
@@ -479,7 +482,64 @@ public class Database extends UnicastRemoteObject implements DataProvider {
         statement.executeUpdate();
     }
 
+    public synchronized void createEleicaoFull(Date inicio, Date fim, String titulo,
+                                               String descricao, Integer dep_id,
+                                               Integer fac_id, ElectionType tipo) throws SQLException {
+        PreparedStatement statement =
+                this.preppedStatements.getStatement("CREATE ELECTION FULL");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if (inicio == null){
+            statement.setString(1, "YYYY-MM-DD HH:MM:SS");
+        }
+        else {
+            statement.setString(1, dateFormat.format(inicio));
+        }
 
+        if (fim == null){
+            statement.setString(2, "YYYY-MM-DD HH:MM:SS");
+        }
+        else {
+            statement.setString(2, dateFormat.format(fim));
+        }
+
+        statement.setString(3, titulo);
+        statement.setString(4, descricao);
+        if (dep_id == null){
+            if (tipo == ElectionType.NUCLEO_ESTUDANTES || tipo == ElectionType.DEPARTAMENTO){
+                throw new java.lang.IllegalArgumentException("Department id cannot be null for department elections");
+            }
+            else{
+                statement.setNull(5, Types.INTEGER);
+            }
+        }
+        else {
+            if (tipo == ElectionType.FACULDADE || tipo == ElectionType.CONSELHO_GERAL){
+                throw new java.lang.IllegalArgumentException("Department id should be null for faculdade elections");
+            }
+            else {
+                statement.setInt(5, dep_id);
+            }
+        }
+
+        if (fac_id == null){
+            if (tipo == ElectionType.FACULDADE){
+                throw new java.lang.IllegalArgumentException("Faculdade id cannot be null for faculdade elections");
+            }
+            else{
+                statement.setNull(6, Types.INTEGER);
+            }
+        }
+        else {
+            if (tipo != ElectionType.FACULDADE){
+                throw new java.lang.IllegalArgumentException("Faculdade id should be null for non faculdade elections");
+            }
+            else {
+                statement.setInt(6, fac_id);
+            }
+        }
+        statement.setString(7, tipo.getType());
+        statement.executeUpdate();
+    }
 
 
 

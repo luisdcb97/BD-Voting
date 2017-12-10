@@ -23,7 +23,7 @@ CREATE TRIGGER validate_datespan
   FOR EACH ROW
   WHEN (new.inicio > new.fim)
 BEGIN
-  SELECT raise(FAIL, 'End of election has to be after beginning');
+  SELECT raise(FAIL, 'Beginning has to be before the end') WHERE new.inicio > new.fim;
 END;
 
 CREATE TRIGGER insert_default_election_begin_date
