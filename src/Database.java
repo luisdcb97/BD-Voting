@@ -114,6 +114,12 @@ public class Database extends UnicastRemoteObject implements DataProvider {
             e.printStackTrace();
         }
 
+        System.getProperties().put("java.security.policy", "src/policy.all");
+        if (System.getSecurityManager() == null) {
+            System.setSecurityManager(new SecurityManager());
+        }
+        System.out.println("Security policy read and enforcing...");
+
     }
 
     public Database() throws SQLException, RemoteException {
