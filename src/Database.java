@@ -120,20 +120,44 @@ public class Database {
         ResultSet set;
         set = this.preppedStatements.getStatement("ALL DEPARTAMENTOS").executeQuery();
         int columnCount = set.getMetaData().getColumnCount();
-        Vector[] faculdades = new Vector[columnCount];
-        faculdades[0] = new Vector<String>();
-        faculdades[1] = new Vector<String>();
+        Vector[] departamentos = new Vector[columnCount];
         for (int i = 0; i < columnCount; i++){
-            faculdades[i].add(set.getMetaData().getColumnName(i+1));
+            departamentos[i] = new Vector<String>();
+            departamentos[i].add(set.getMetaData().getColumnName(i+1));
         }
         while(set.next()){
-            faculdades[0].add(set.getInt(1));
-            faculdades[1].add(set.getString(2));
+            departamentos[0].add(set.getInt(1));
+            departamentos[1].add(set.getString(2));
+            departamentos[2].add(set.getInt(3));
         }
-        String strings[][] = new String[columnCount][faculdades[0].size()];
-        for (int i = 0; i < faculdades.length; i++) {
-            for (int j = 0; j < faculdades[i].size(); j++) {
-                strings[i][j] = String.valueOf(faculdades[i].get(j));
+        String strings[][] = new String[columnCount][departamentos[0].size()];
+        for (int i = 0; i < departamentos.length; i++) {
+            for (int j = 0; j < departamentos[i].size(); j++) {
+                strings[i][j] = String.valueOf(departamentos[i].get(j));
+            }
+        }
+        return strings;
+    }
+
+    public synchronized String[][] getDepartamentosByFaculdade(int idFaculdade) throws SQLException {
+        PreparedStatement statement = this.preppedStatements.getStatement("DEPARTAMENTOS OF FACULDADE");
+        statement.setInt(1, idFaculdade);
+        ResultSet set = statement.executeQuery();
+        int columnCount = set.getMetaData().getColumnCount();
+        Vector[] departamentos = new Vector[columnCount];
+        for (int i = 0; i < columnCount; i++){
+            departamentos[i] = new Vector<String>();
+            departamentos[i].add(set.getMetaData().getColumnName(i+1));
+        }
+        while(set.next()){
+            departamentos[0].add(set.getInt(1));
+            departamentos[1].add(set.getString(2));
+            departamentos[2].add(set.getInt(3));
+        }
+        String strings[][] = new String[columnCount][departamentos[0].size()];
+        for (int i = 0; i < departamentos.length; i++) {
+            for (int j = 0; j < departamentos[i].size(); j++) {
+                strings[i][j] = String.valueOf(departamentos[i].get(j));
             }
         }
         return strings;
