@@ -7,11 +7,13 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;
 
-public class Database extends UnicastRemoteObject implements DataProvider{
+public class Database extends UnicastRemoteObject implements DataProvider {
     Connection databaseConnection;
     private Registry registo;
     private String databaseURL = "jdbc:sqlite:tempbd.sqlite3";
@@ -152,16 +154,26 @@ public class Database extends UnicastRemoteObject implements DataProvider{
                 "CREATE DEPARTAMENTO OF FACULDADE", "INSERT INTO departamentos(nome, faculdades_id) VALUES(?, ?);");
         this.preppedStatements.addStatement(
                 "DELETE DEPARTAMENTO", "DELETE FROM departamentos WHERE id = ?;");
+
+        this.preppedStatements.addStatement(
+                "CREATE DEFAULT PESSOA",
+                "INSERT INTO pessoas(nome, cc, username, password, departamento_id, faculdade_id) VALUES(?, ?, ?, ?, ?, ?)"
+        );
+        this.preppedStatements.addStatement(
+                "CREATE FULL PESSOA",
+                "INSERT INTO pessoas(nome, cc, validade_cc, username, password, morada, telefone, funcao, departamento_id, faculdade_id) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+        );
+        this.preppedStatements.addStatement(
+                "ALL PESSOAS", "SELECT * FROM pessoas;");
     }
 
     private synchronized void toggleForeignKeys(boolean lever) throws SQLException {
         Statement statement =
                 this.databaseConnection.createStatement();
         String s = "PRAGMA FOREIGN_KEYS = ";
-        if (lever){
+        if (lever) {
             s += "ON;";
-        }
-        else{
+        } else {
             s += "OFF;";
         }
         statement.executeUpdate(s);
@@ -181,10 +193,10 @@ public class Database extends UnicastRemoteObject implements DataProvider{
         faculdades[0] = new Vector<String>();
         faculdades[1] = new Vector<String>();
         int columnCount = set.getMetaData().getColumnCount();
-        for (int i = 0; i < columnCount; i++){
-            faculdades[i].add(set.getMetaData().getColumnName(i+1));
+        for (int i = 0; i < columnCount; i++) {
+            faculdades[i].add(set.getMetaData().getColumnName(i + 1));
         }
-        while(set.next()){
+        while (set.next()) {
             faculdades[0].add(set.getInt(1));
             faculdades[1].add(set.getString(2));
         }
@@ -203,7 +215,6 @@ public class Database extends UnicastRemoteObject implements DataProvider{
         statement.setInt(1, id);
         statement.executeUpdate();
     }
-
 
 
     public synchronized void createDepartamento(String nome) throws SQLException {
@@ -226,11 +237,11 @@ public class Database extends UnicastRemoteObject implements DataProvider{
         set = this.preppedStatements.getStatement("ALL DEPARTAMENTOS").executeQuery();
         int columnCount = set.getMetaData().getColumnCount();
         Vector[] departamentos = new Vector[columnCount];
-        for (int i = 0; i < columnCount; i++){
+        for (int i = 0; i < columnCount; i++) {
             departamentos[i] = new Vector<String>();
-            departamentos[i].add(set.getMetaData().getColumnName(i+1));
+            departamentos[i].add(set.getMetaData().getColumnName(i + 1));
         }
-        while(set.next()){
+        while (set.next()) {
             departamentos[0].add(set.getInt(1));
             departamentos[1].add(set.getString(2));
             departamentos[2].add(set.getInt(3));
@@ -250,11 +261,11 @@ public class Database extends UnicastRemoteObject implements DataProvider{
         ResultSet set = statement.executeQuery();
         int columnCount = set.getMetaData().getColumnCount();
         Vector[] departamentos = new Vector[columnCount];
-        for (int i = 0; i < columnCount; i++){
+        for (int i = 0; i < columnCount; i++) {
             departamentos[i] = new Vector<String>();
-            departamentos[i].add(set.getMetaData().getColumnName(i+1));
+            departamentos[i].add(set.getMetaData().getColumnName(i + 1));
         }
-        while(set.next()){
+        while (set.next()) {
             departamentos[0].add(set.getInt(1));
             departamentos[1].add(set.getString(2));
             departamentos[2].add(set.getInt(3));
@@ -273,11 +284,11 @@ public class Database extends UnicastRemoteObject implements DataProvider{
         ResultSet set = statement.executeQuery("SELECT * FROM departamentos WHERE faculdades_id IS NULL;");
         int columnCount = set.getMetaData().getColumnCount();
         Vector[] departamentos = new Vector[columnCount];
-        for (int i = 0; i < columnCount; i++){
+        for (int i = 0; i < columnCount; i++) {
             departamentos[i] = new Vector<String>();
-            departamentos[i].add(set.getMetaData().getColumnName(i+1));
+            departamentos[i].add(set.getMetaData().getColumnName(i + 1));
         }
-        while(set.next()){
+        while (set.next()) {
             departamentos[0].add(set.getInt(1));
             departamentos[1].add(set.getString(2));
             departamentos[2].add(set.getInt(3));
@@ -308,4 +319,115 @@ public class Database extends UnicastRemoteObject implements DataProvider{
 
 
 
+    public synchronized void createPessoa(String nome, String cc, String username,
+                                          String password, Integer dep_id, Integer fac_id)
+            throws SQLException {
+        PreparedStatement statement =
+                this.preppedStatements.getStatement("CREATE DEFAULT PESSOA");
+        statement.setString(1, nome);
+        statement.setString(2, cc);
+        statement.setString(3, username);
+        statement.setString(4, password);
+        if (dep_id != null){
+            statement.setInt(5, dep_id);
+        }
+        else {
+            statement.setNull(5, Types.INTEGER);
+        }
+
+        if (fac_id != null){
+            statement.setInt(6, fac_id);
+        }
+        else {
+            statement.setNull(6, Types.INTEGER);
+        }
+        statement.executeUpdate();
+
+    }
+
+    public synchronized void createPessoaFullData(String nome, String cc,
+                                                  Date validadeCC, String username,
+                                                  String password, String morada,
+                                                  Integer telefone, PersonType funcao,
+                                                  Integer dep_id, Integer fac_id)
+            throws SQLException {
+        PreparedStatement statement =
+                this.preppedStatements.getStatement("CREATE FULL PESSOA");
+        statement.setString(1, nome);
+        statement.setString(2, cc);
+        if (validadeCC != null) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            statement.setString(3, dateFormat.format(validadeCC));
+        }
+        else {
+            statement.setString(3, "YYYY-MM-DD HH:MM:SS");
+        }
+        statement.setString(4, username);
+        statement.setString(5, password);
+        if (morada != null) {
+            statement.setString(6, morada);
+        }
+        else {
+            statement.setNull(6, Types.VARCHAR);
+        }
+        if (telefone != null){
+            statement.setInt(7, telefone);
+        }
+        else{
+            statement.setNull(7, Types.VARCHAR);
+        }
+        if (funcao != null){
+            statement.setString(8, funcao.toString());
+        }
+        else{
+            statement.setString(8, PersonType.STUDENT.toString());
+        }
+
+        if (dep_id != null){
+            statement.setInt(9, dep_id);
+        }
+        else {
+            statement.setNull(9, Types.INTEGER);
+        }
+
+        if (fac_id != null){
+            statement.setInt(10, fac_id);
+        }
+        else {
+            statement.setNull(10, Types.INTEGER);
+        }
+        statement.executeUpdate();
+
+    }
+    public synchronized String[][] getAllPessoas() throws SQLException {
+        ResultSet set;
+        set = this.preppedStatements.getStatement("ALL PESSOAS").executeQuery();
+        int columnCount = set.getMetaData().getColumnCount();
+        Vector[] pessoas = new Vector[columnCount];
+        int[] columnTypes = new int[columnCount];
+        for (int i = 0; i < columnCount; i++) {
+            pessoas[i] = new Vector<String>();
+            pessoas[i].add(set.getMetaData().getColumnName(i + 1));
+        }
+        while (set.next()) {
+            pessoas[0].add(set.getInt(1));
+            pessoas[1].add(set.getString(2));
+            pessoas[2].add(set.getString(3));
+            pessoas[3].add(set.getString(4));
+            pessoas[4].add(set.getString(5));
+            pessoas[5].add(set.getString(6));
+            pessoas[6].add(set.getString(7));
+            pessoas[7].add(set.getInt(8));
+            pessoas[8].add(set.getString(9));
+            pessoas[9].add(set.getInt(10));
+            pessoas[10].add(set.getInt(11));
+        }
+        String strings[][] = new String[columnCount][pessoas[0].size()];
+        for (int i = 0; i < pessoas.length; i++) {
+            for (int j = 0; j < pessoas[i].size(); j++) {
+                strings[i][j] = String.valueOf(pessoas[i].get(j));
+            }
+        }
+        return strings;
+    }
 }
