@@ -2,7 +2,7 @@ CREATE TABLE pessoas (
   id              INTEGER PRIMARY KEY NOT NULL,
   nome            VARCHAR(128)        NOT NULL,
   cc              VARCHAR(16)         NOT NULL UNIQUE,
-  validade_cc     DATE                NOT NULL DEFAULT 'YYYY-MM-DD',
+  validade_cc     DATE                NOT NULL DEFAULT 'YYYY-MM-DD HH:MM:SS',
   username        VARCHAR(64)         NOT NULL UNIQUE,
   password        VARCHAR(64)         NOT NULL,
   morada          VARCHAR(128),
@@ -17,9 +17,9 @@ CREATE TRIGGER insert_default_date
   AFTER INSERT
   ON pessoas
   FOR EACH ROW
-  WHEN (NEW.validade_cc IS 'YYYY-MM-DD')
+  WHEN (NEW.validade_cc IS 'YYYY-MM-DD HH:MM:SS')
 BEGIN
   UPDATE pessoas
-  SET validade_cc = date('now', 'start of month', '+1 year')
-  WHERE validade_cc = 'YYYY-MM-DD';
+  SET validade_cc = datetime('now', 'start of month', '+1 year')
+  WHERE validade_cc = 'YYYY-MM-DD HH:MM:SS';
 END;
