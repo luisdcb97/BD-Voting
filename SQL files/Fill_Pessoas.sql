@@ -5,3 +5,6 @@ VALUES ('luis', 'z5', 'luisd', 'ola', 'dd', 322, 1);
 INSERT INTO pessoas (nome, cc, username, password, validade_cc, morada,
                      telefone, funcao, departamento_id)
 VALUES ('pedro', 'az5', 'pedroc', 'aaaa', '2017-12-10 00:00:00', 'ww', 123, 'TEACHER', 2);
+
+INSERT INTO pessoas (nome, cc, username, password, validade_cc, funcao, faculdade_id)
+VALUES ('pedasdro', 'aasdz5', 'pedroasdc', 'aaaa', '2017-12-10 00:00:00', 'JANITOR', 3);
